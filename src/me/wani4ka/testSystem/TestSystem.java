@@ -39,19 +39,20 @@ public class TestSystem {
         File input = new File("input.txt");
         File output = new File("output.txt");
         for (String s : tests) {
-            System.out.println("Running test " + s);
+            System.out.println();
+            System.out.println("###### " + s + " ######");
             System.err.println("Running test " + s);
             Tester t = new Tester(s);
             t.run();
             t.join();
             System.out.println("Verdict: " + t.getVerdict());
             System.out.println("Message: " + t.getMessage());
-            System.out.println();
             if (t.getVerdict() != Verdict.INTERNAL) ++all;
             if (t.getVerdict() == Verdict.OK) ++passed;
             if (input.exists()) input.delete();
             if (output.exists()) output.delete();
         }
+        System.out.println();
         System.out.println(passed + " / " + all + " tests passed.");
         System.err.println(passed + " / " + all + " tests passed.");
     }

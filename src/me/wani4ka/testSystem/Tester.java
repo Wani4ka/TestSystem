@@ -10,12 +10,10 @@ public class Tester extends Thread {
 
     private final String name;
 
-    private long time;
-
     private Verdict verdict = Verdict.TESTING;
     private String message = "Program is starting...";
 
-    public Tester(String name) {
+    Tester(String name) {
         this.name = name;
     }
 
@@ -50,7 +48,7 @@ public class Tester extends Thread {
             return;
         }
 
-        File f = new File("input.txt");
+        File f = new File(TesterProperties.inputFile);
         if (f.exists()) f.delete();
         try {
             f.createNewFile();
@@ -63,16 +61,17 @@ public class Tester extends Thread {
         long l = System.currentTimeMillis();
         try {
             Process p = Runtime.getRuntime().exec(TesterProperties.programName);
-            p.waitFor(TesterProperties.tl, TimeUnit.MILLISECONDS);
+            p.waitFor(TesterProperties.tl * 5, TimeUnit.MILLISECONDS);
             l = System.currentTimeMillis() - l;
-            if (p.isAlive()) {
+            if (!p.isAlive() && p.exitValue() != 0) {
+                verdict = Verdict.RE;
+                message = "Program returned exit code " + p.exitValue() + ".";
+                return;
+            }
+            if (l > TesterProperties.tl || p.isAlive()) {
                 p.destroyForcibly();
                 verdict = Verdict.TL;
                 message = "Program tried to work longer that 1 second.";
-                return;
-            } else if (p.exitValue() != 0){
-                verdict = Verdict.RE;
-                message = "Program returned exit code " + p.exitValue();
                 return;
             }
         } catch (IOException | InterruptedException e) {
@@ -81,10 +80,10 @@ public class Tester extends Thread {
             return;
         }
 
-        File pout = new File("output.txt");
+        File pout = new File(TesterProperties.outputFile);
         if (!pout.exists()) {
             verdict = Verdict.WA;
-            message = "File output.txt not found.";
+            message = "Output file " + TesterProperties.outputFile + " not found.";
             return;
         }
         List<String> programOutput;
@@ -110,15 +109,15 @@ public class Tester extends Thread {
         verdict = Verdict.OK;
         message = "Test passed in " + l + "ms";
         f.delete();
-        f = new File("output.txt");
+        f = new File(TesterProperties.inputFile);
         if (f.exists()) f.delete();
     }
 
-    public Verdict getVerdict() {
+    Verdict getVerdict() {
         return verdict;
     }
 
-    public String getMessage() {
+    String getMessage() {
         return message;
     }
 }

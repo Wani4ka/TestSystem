@@ -1,6 +1,9 @@
 package me.wani4ka.testSystem;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class TesterProperties {
@@ -8,6 +11,8 @@ public class TesterProperties {
     static String testInputExtension = ".in";
     static String testOutputExtension = ".out";
     static String programName = "solution.exe";
+    static String inputFile = "input.txt";
+    static String outputFile = "output.txt";
     static long tl = 1000;
 
     private static Properties defaults() {
@@ -16,6 +21,8 @@ public class TesterProperties {
         prop.put("test-output-extension", ".out");
         prop.put("tl", 1000);
         prop.put("program-name", "solution.exe");
+        prop.put("input-file", "input.txt");
+        prop.put("output-file", "output.txt");
         return prop;
     }
 
@@ -28,6 +35,8 @@ public class TesterProperties {
         testOutputExtension = prop.getProperty("test-output-extension");
         tl = Long.parseLong(prop.getProperty("tl"));
         programName = prop.getProperty("program-name");
+        inputFile = prop.getProperty("input-file");
+        outputFile = prop.getProperty("output-file");
         create();
     }
 
@@ -40,6 +49,8 @@ public class TesterProperties {
         prop.setProperty("test-output-extension", testOutputExtension);
         prop.setProperty("tl", String.valueOf(tl));
         prop.setProperty("program-name", programName);
+        prop.setProperty("input-file", inputFile);
+        prop.setProperty("output-file", outputFile);
         prop.store(new FileOutputStream(f), "TestSystem properties");
     }
 }
